@@ -1,0 +1,10 @@
+:where(.readflow-home, .readflow-login) {
+  --home-background: #090909;
+  --home-surface: #171717;
+  --home-elevated: #222222;
+  --home-primary: #D4B896;
+  --home-hover: #B89563;
+  --home-glow: #E8C999;
+  --home-text: #F5F3EF;
+  --home-muted: #A3A3A3;
+}

@@ -1,31 +1,28 @@
-import { useState } from "react";
-
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Home from "./pages/Home";
+import Access from "./pages/Access";
 
 export default function App() {
-  const [resposta, setResposta] = useState<string | null>(null);
-  const [carregando, setCarregando] = useState(false);
-
-  async function verificarApi() {
-    setCarregando(true);
-    try {
-      const res = await fetch(`${API_URL}/health`);
-      const dados = await res.json();
-      setResposta(JSON.stringify(dados));
-    } catch (erro) {
-      setResposta(`Erro ao conectar com a API: ${String(erro)}`);
-    } finally {
-      setCarregando(false);
-    }
-  }
-
   return (
-    <main style={{ fontFamily: "sans-serif", textAlign: "center", marginTop: "4rem" }}>
-      <h1>Biblioteca Virtual</h1>
-      <button onClick={verificarApi} disabled={carregando}>
-        {carregando ? "Verificando..." : "Verificar API"}
-      </button>
-      {resposta && <pre>{resposta}</pre>}
-    </main>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/cadastro" element={<Register />} />
+          <Route element={<ProtectedRoute profiles={["ALUNO", "PROFESSOR", "ADMINISTRADOR"]} />}>
+            <Route path="/biblioteca" element={<Access />} />
+          </Route>
+          <Route element={<ProtectedRoute profiles={["ADMINISTRADOR"]} />}>
+            <Route path="/admin" element={<Access admin />} />
+          </Route>
+          <Route path="*" element={<Home />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
