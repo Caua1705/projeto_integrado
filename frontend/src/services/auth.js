@@ -1,8 +1,15 @@
 import api from "../utils/axios";
 
 export async function loginWithPassword({ email, password }, signal) {
-  const form = new URLSearchParams({ username: email.trim(), password });
-  const response = await api.post("/auth/login", form, { signal });
+  const response = await api.post(
+    "/auth/login",
+    {
+      email: email.trim(),
+      senha: password,
+    },
+    { signal },
+  );
+
   return response.data;
 }
 
@@ -19,5 +26,6 @@ export async function registerStudent(values, signal) {
     email: values.email.trim(),
     senha: values.senha,
   };
+
   return api.post("/auth/registrar", payload, { signal });
 }
